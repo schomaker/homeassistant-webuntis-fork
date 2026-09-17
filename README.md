@@ -2,13 +2,9 @@
 
 ### Custom component to access Web Untis data in Home Assistant
 
-[![HACS Badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-![Version](https://img.shields.io/github/v/release/JonasJoKuJonas/homeassistant-WebUntis)
-[![Downloads](https://img.shields.io/github/downloads/JonasJoKuJonas/homeassistant-WebUntis/total)](https://tooomm.github.io/github-release-stats/?username=JonasJoKuJonas&repository=HomeAssistant-WebUntis)
-![HACS Install Badge](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=integration%20installations&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.webuntis.total)
-[![Latest Release](https://img.shields.io/github/release-date/JonasJoKuJonas/homeassistant-WebUntis?style=flat&label=Latest%20Release)](https://github.com/JonasJoKuJonas/homeassistant-WebUntis/releases)
-[![Open Issues](https://img.shields.io/github/issues/JonasJoKuJonas/homeassistant-WebUntis?style=flat&label=Open%20Issues)](https://github.com/JonasJoKuJonas/homeassistant-WebUntis/issues)
-[![Discord](https://img.shields.io/discord/1090218586565509170?style=flat&logo=discord&logoColor=white&label=Discord&color=7289da)](https://discord.gg/34EHnHQaPm)
+[![HACS Badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+![Version](https://img.shields.io/github/v/release/schomaker/homeassistant-webuntis-fork)
+[![Open Issues](https://img.shields.io/github/issues/schomaker/homeassistant-webuntis-fork?style=flat&label=Open%20Issues)](https://github.com/schomaker/homeassistant-webuntis-fork/issues)
 
 ---
 
@@ -28,7 +24,7 @@
 ---
 
 ## Setup
-[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=JonasJoKuJonas&repository=Homeassistant-WebUntis)
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=schomaker&repository=homeassistant-webuntis-fork)
 
 You can install WebUntis via HACS or manually. For detailed instructions, see the dedicated setup guide:
 
@@ -70,19 +66,5 @@ See [WebUntis Homework Card](docs/WEBUNTIS_HOMEWORK_CARD.md) for installation an
 
 ---
 
-## [![Join our Discord](https://discordapp.com/api/guilds/1090218586565509170/widget.png?style=banner2)](https://discord.gg/34EHnHQaPm)
-
-
-## 💖 Support Me
-
-I’m a 19-year-old software developer from Germany, creating projects like this in my free time. If you like my work, consider supporting me:
-
-<a href="https://www.buymeacoffee.com/Jonas_JoKu" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174" ></a>
-
-<a href="https://www.paypal.com/donate/?hosted_button_id=29CAZV3ZHWDMW">
-  <img src="https://raw.githubusercontent.com/andreostrovsky/donate-with-paypal/925c5a9e397363c6f7a477973fdeed485df5fdd9/blue.svg" alt="Donate with PayPal" height="40"/>
-</a>
-
-
 ## Disclaimer
-This project is not affiliated with WebUntis or Untis GmbH. It is an independent integration developed by hobby developers. All trademarks and logos belong to their respective owners. Use this integration at your own risk. The developer is not responsible for any issues or damages that may arise from using this integration.
+This project is not affiliated with WebUntis or Untis GmbH. All trademarks and logos belong to their respective owners. Use this integration at your own risk.
