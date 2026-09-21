@@ -76,3 +76,31 @@ get_schoolyears:
         device:
           filter:
             - integration: webuntis
+
+print_homework:
+  description: Print a WebUntis homework-list sensor's current data directly to an IPP-capable printer.
+  fields:
+    entity_id:
+      required: true
+      selector:
+        entity:
+          filter:
+            - integration: webuntis
+              domain: sensor
+    printer_entity_id:
+      required: false
+      description: Entity ID of a printer status sensor exposing a "uri_supported" attribute (e.g. from the Home Assistant IPP integration). Ignored when printer_uri is set.
+      selector:
+        entity:
+          filter:
+            - domain: sensor
+    printer_uri:
+      required: false
+      description: Explicit IPP printer URI (e.g. ipp://192.168.2.25:631/ipp/print). Overrides printer_entity_id.
+      selector:
+        text:
+    title:
+      required: false
+      default: Hausaufgaben
+      selector:
+        text:

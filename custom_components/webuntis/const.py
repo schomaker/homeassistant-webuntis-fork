@@ -7,7 +7,9 @@ CONFIG_ENTRY_VERSION = 23
 CONF_LIVE_ACTIVITIES = "live_activities"
 CONF_FRONTEND_CARD_REGISTERED = "frontend_card_registered"
 
+FRONTEND_FILES_URL_PATH = "/webuntis_files"
 FRONTEND_CARD_URL_PATH = "/webuntis_files/webuntis-homework-card.js"
+FRONTEND_IPP_BUTTON_URL_PATH = "/webuntis_files/webuntis-homework-ipp-button.js"
 
 DEFAULT_OPTIONS = {
     "lesson_long_name": True,

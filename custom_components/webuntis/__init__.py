@@ -44,6 +44,8 @@ from .const import (
     DEFAULT_OPTIONS,
     DOMAIN,
     FRONTEND_CARD_URL_PATH,
+    FRONTEND_FILES_URL_PATH,
+    FRONTEND_IPP_BUTTON_URL_PATH,
     SCAN_INTERVAL,
     SIGNAL_NAME_PREFIX,
     NAME_EVENT_LESSON_CHANGE,
@@ -64,7 +66,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def _async_register_frontend_card(hass: HomeAssistant) -> None:
-    """Serve the bundled homework card and add it as a Lovelace resource.
+    """Serve the bundled dashboard cards and add them as Lovelace resources.
 
     Runs at most once per HA process, guarded via hass.data, since
     async_setup_entry runs once per config entry (e.g. multiple WebUntis
@@ -75,25 +77,26 @@ async def _async_register_frontend_card(hass: HomeAssistant) -> None:
         return
     domain_data[CONF_FRONTEND_CARD_REGISTERED] = True
 
-    card_path = Path(__file__).parent / "www" / "webuntis-homework-card.js"
+    www_path = Path(__file__).parent / "www"
 
     try:
         try:
             from homeassistant.components.http import StaticPathConfig
 
             await hass.http.async_register_static_paths(
-                [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_path), False)]
+                [StaticPathConfig(FRONTEND_FILES_URL_PATH, str(www_path), False)]
             )
         except ImportError:
             # Home Assistant < 2024.7 fallback
             hass.http.register_static_path(
-                FRONTEND_CARD_URL_PATH, str(card_path), cache_headers=False
+                FRONTEND_FILES_URL_PATH, str(www_path), cache_headers=False
             )
 
         add_extra_js_url(hass, FRONTEND_CARD_URL_PATH)
+        add_extra_js_url(hass, FRONTEND_IPP_BUTTON_URL_PATH)
     except Exception as error:  # noqa: BLE001
-        # The homework card is a nice-to-have; never fail integration setup over it.
-        _LOGGER.warning("Could not register the WebUntis homework card: %s", error)
+        # The dashboard cards are a nice-to-have; never fail integration setup over it.
+        _LOGGER.warning("Could not register the WebUntis dashboard cards: %s", error)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

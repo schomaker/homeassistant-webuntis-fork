@@ -212,3 +212,53 @@ def build_homework_list(param_list, due_soon_days=HOMEWORK_DUE_SOON_DAYS):
 
     homeworks.sort(key=lambda hw: (hw["due_date"] is None, hw["due_date"]))
     return homeworks
+
+
+GROUP_LABELS_DE = {
+    "due_soon": "Bald fällig",
+    "open": "Noch nicht abgeschlossen",
+    "overdue": "Verpasst",
+    "completed": "Erledigt",
+}
+
+
+def format_homework_text(
+    homeworks,
+    title="Hausaufgaben",
+    include_groups=("due_soon", "open", "overdue"),
+):
+    """Render a homework list (as returned by build_homework_list) as plain text.
+
+    Fixed-width columns so it stays aligned when printed in a monospace font.
+    """
+    lines = [title, "=" * len(title)]
+
+    by_group = {key: [] for key in include_groups}
+    for homework in homeworks:
+        if homework.get("group") in by_group:
+            by_group[homework["group"]].append(homework)
+
+    for group in include_groups:
+        items = by_group[group]
+        if not items:
+            continue
+
+        header = GROUP_LABELS_DE.get(group, group)
+        lines.append("")
+        lines.append(header.upper())
+        lines.append("-" * len(header))
+        lines.append(f"{'Fach':<6}{'Lehrkraft':<12}{'Aufgabe':<12}{'Fällig':<12}Text")
+
+        for homework in items:
+            subject = (homework.get("subject") or "")[:5]
+            teacher = (homework.get("teacher") or "")[:11]
+            assigned = homework.get("date_assigned") or ""
+            due = homework.get("due_date") or ""
+            text = homework.get("text") or ""
+            lines.append(f"{subject:<6}{teacher:<12}{assigned:<12}{due:<12}{text}")
+
+    if len(lines) == 2:
+        lines.append("")
+        lines.append("Keine Hausaufgaben.")
+
+    return "\n".join(lines) + "\n"
