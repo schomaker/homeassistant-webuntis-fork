@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import logging
 from datetime import datetime
 
@@ -10,8 +11,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.service import async_extract_config_entry_ids
 
 from .const import DOMAIN
-from .utils.homework import format_homework_text
-from .utils.ipp_print import async_print_text, resolve_ipp_uri
+from .utils.ipp_render import render_homework_jpeg
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,29 +22,21 @@ async def async_setup_services(hass: HomeAssistant) -> None:
     if not hass.services.has_service(DOMAIN, "print_homework"):
 
         async def async_handle_print_homework(call: ServiceCall) -> None:
-            """Render a homework-list sensor's data as text and send it to an IPP printer."""
-            entity_id = call.data["entity_id"]
-            printer_uri = call.data.get("printer_uri")
-            printer_entity_id = call.data.get("printer_entity_id")
+            """Render a homework-list sensor's data as a JPEG and print it via ipp_printing.
 
-            if not printer_uri:
-                if not printer_entity_id:
-                    raise HomeAssistantError(
-                        "Either printer_entity_id or printer_uri is required"
-                    )
-                printer_state = hass.states.get(printer_entity_id)
-                if printer_state is None:
-                    raise HomeAssistantError(
-                        f"Entity {printer_entity_id} not found"
-                    )
-                uri_supported = printer_state.attributes.get("uri_supported")
-                if not uri_supported:
-                    raise HomeAssistantError(
-                        f"{printer_entity_id} has no 'uri_supported' attribute "
-                        "(expected the Home Assistant IPP integration's printer "
-                        "status sensor)"
-                    )
-                printer_uri = resolve_ipp_uri(uri_supported)
+            Delegates the actual IPP transport to the ipp_printing integration
+            (ipp_printing.print) instead of talking IPP directly: this printer
+            only advertises PCLXL/PostScript/PCL5E/PJL document formats over
+            IPP, not text/plain, so image/jpeg is what actually works.
+            """
+            if not hass.services.has_service("ipp_printing", "print"):
+                raise HomeAssistantError(
+                    "The 'ipp_printing' integration is required for "
+                    "webuntis.print_homework but isn't installed"
+                )
+
+            entity_id = call.data["entity_id"]
+            printer_entity_id = call.data["printer_entity_id"]
 
             sensor_state = hass.states.get(entity_id)
             if sensor_state is None:
@@ -52,10 +44,23 @@ async def async_setup_services(hass: HomeAssistant) -> None:
 
             homeworks = sensor_state.attributes.get("homeworks", [])
             title = call.data.get("title", "Hausaufgaben")
-            text = format_homework_text(homeworks, title=title)
+
+            jpeg_bytes = await hass.async_add_executor_job(
+                render_homework_jpeg, homeworks, title
+            )
 
             try:
-                await async_print_text(hass, printer_uri, text, job_name=title)
+                await hass.services.async_call(
+                    "ipp_printing",
+                    "print",
+                    {
+                        "data": base64.b64encode(jpeg_bytes).decode("ascii"),
+                        "mimetype": "image/jpeg",
+                        "paper_size": "iso_a4_210x297mm",
+                    },
+                    target={"entity_id": printer_entity_id},
+                    blocking=True,
+                )
             except Exception as error:  # noqa: BLE001
                 raise HomeAssistantError(f"Printing failed: {error}") from error
 

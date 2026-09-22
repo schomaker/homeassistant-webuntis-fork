@@ -15,7 +15,8 @@
   ],
   "quality_scale": "silver",
   "requirements": [
-    "webuntis==0.1.24"
+    "webuntis==0.1.24",
+    "Pillow"
   ],
   "version": "v0.0.0"
 }

@@ -78,7 +78,7 @@ get_schoolyears:
             - integration: webuntis
 
 print_homework:
-  description: Print a WebUntis homework-list sensor's current data directly to an IPP-capable printer.
+  description: Render a WebUntis homework-list sensor's current data as a JPEG and print it via the ipp_printing integration.
   fields:
     entity_id:
       required: true
@@ -88,17 +88,12 @@ print_homework:
             - integration: webuntis
               domain: sensor
     printer_entity_id:
-      required: false
-      description: Entity ID of a printer status sensor exposing a "uri_supported" attribute (e.g. from the Home Assistant IPP integration). Ignored when printer_uri is set.
+      required: true
+      description: Entity ID of the printer (an entity from the "ipp" integration), as targeted by ipp_printing.print.
       selector:
         entity:
           filter:
-            - domain: sensor
-    printer_uri:
-      required: false
-      description: Explicit IPP printer URI (e.g. ipp://192.168.2.25:631/ipp/print). Overrides printer_entity_id.
-      selector:
-        text:
+            - integration: ipp
     title:
       required: false
       default: Hausaufgaben

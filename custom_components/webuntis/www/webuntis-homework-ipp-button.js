@@ -6,12 +6,14 @@
  *
  * type: custom:webuntis-homework-ipp-button
  * entity: sensor.<name>_homework_list        # required
- * printer: sensor.some_ipp_printer_status    # required - a printer status
- *                                             # sensor exposing "uri_supported"
- *                                             # (e.g. Home Assistant's core IPP integration)
- * printer_uri: ipp://192.168.2.25:631/ipp/print  # optional, overrides `printer`
+ * printer: sensor.some_ipp_printer_status    # required - an entity from the
+ *                                             # "ipp" integration, as targeted
+ *                                             # by ipp_printing.print
  * title: "Hausaufgaben drucken"              # optional, button label
  * print_title: "Hausaufgaben"                # optional, document title / print job name
+ *
+ * Requires the "ipp_printing" integration (provides ipp_printing.print,
+ * which webuntis.print_homework delegates the actual IPP transport to).
  */
 
 class WebuntisHomeworkIppButton extends HTMLElement {
@@ -19,8 +21,8 @@ class WebuntisHomeworkIppButton extends HTMLElement {
     if (!config.entity) {
       throw new Error("Bitte eine 'entity' angeben (sensor.<name>_homework_list)");
     }
-    if (!config.printer && !config.printer_uri) {
-      throw new Error("Bitte 'printer' (Entity) oder 'printer_uri' angeben");
+    if (!config.printer) {
+      throw new Error("Bitte 'printer' angeben (Entity der 'ipp'-Integration)");
     }
     this._config = config;
 
@@ -64,13 +66,9 @@ class WebuntisHomeworkIppButton extends HTMLElement {
     const lang = (this._hass && this._hass.language) || "de";
     const data = {
       entity_id: this._config.entity,
+      printer_entity_id: this._config.printer,
       title: this._config.print_title || "Hausaufgaben",
     };
-    if (this._config.printer_uri) {
-      data.printer_uri = this._config.printer_uri;
-    } else {
-      data.printer_entity_id = this._config.printer;
-    }
 
     try {
       await this._hass.callService("webuntis", "print_homework", data);
